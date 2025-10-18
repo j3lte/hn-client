@@ -1,0 +1,34 @@
+{
+  "name": "@j3lte/hn-client",
+  "version": "0.0.1",
+  "exports": {
+    ".": "./src/mod.ts"
+  },
+  "tasks": {
+    "test": "deno test -A",
+    "prep": "deno fmt && deno lint",
+    "dnt": "deno run -A --lock deno.dev.lock scripts/dnt.ts",
+    "publish:test": "deno publish --dry-run --allow-dirty"
+  },
+  "fmt": {
+    "exclude": [
+      "**/*.md"
+    ],
+    "lineWidth": 120,
+    "indentWidth": 2
+  },
+  "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.3",
+    "@std/html": "jsr:@std/html@^1.0.5",
+    "date-fns": "npm:date-fns@^4.1.0"
+  },
+  "license": "MIT",
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "README.md",
+      "LICENSE",
+      "deno.json"
+    ]
+  }
+}

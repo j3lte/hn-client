@@ -1,0 +1,9 @@
+testing*
+.artifacts
+node_modules
+.DS_Store
+data/*
+!data/.gitkeep
+deno.dev.lock
+testing.ts
+npm
