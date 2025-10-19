@@ -1,6 +1,6 @@
 {
   "name": "@j3lte/hn-client",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "exports": {
     ".": "./src/mod.ts"
   },
