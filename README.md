@@ -198,7 +198,6 @@ const { data } = await client.search({ query: "test" });
 const client = new HackerNewsClient({
   debug: true,           // Enable debug logging
   objDebug: true,       // Enable object creation logging
-  baseUrl: "https://hn.algolia.com/api/v1"  // Custom API endpoint
 });
 ```
 
