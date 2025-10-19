@@ -37,7 +37,7 @@ export class OrTags {
   constructor(tags: Tag[]) {
     this.tags = tags;
   }
-  static from(tags: Tag[]) {
+  static from(tags: Tag[]): OrTags {
     return new OrTags(tags);
   }
   toString(): string {

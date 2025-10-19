@@ -48,11 +48,11 @@ export class HitObject {
     return getPermaLink(this.data.objectID);
   }
 
-  get createdAt() {
+  get createdAt(): Date | null {
     return this.data.created_at ? parseISO(this.data.created_at) : null;
   }
 
-  reportCreateDebug(type: string) {
+  reportCreateDebug(type: string): void {
     if (this.debug) {
       console.log(`[DEBUG OBJ] ${type} ${this.data.objectID}`);
     }

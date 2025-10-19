@@ -9,6 +9,18 @@ export type HNSearchClientOptions = {
   baseUrl?: string;
 };
 
+export type HNSearchClientSearchResponse = {
+  meta: {
+    hitsPerPage: number;
+    numberOfHits: number;
+    numberOfPages: number;
+    currentPage: number;
+    timeMsProcessing: number;
+    timeMsServer: number;
+  };
+  data: Array<StoryObject | CommentObject | PollObject | PollOptionObject | HitObject>;
+};
+
 export class HNSearchClient {
   private readonly baseUrl: string;
   private readonly debug: boolean;
@@ -28,17 +40,7 @@ export class HNSearchClient {
   async search(
     params: SearchParams = {},
     init: RequestInit = {},
-  ): Promise<{
-    meta: {
-      hitsPerPage: number;
-      numberOfHits: number;
-      numberOfPages: number;
-      currentPage: number;
-      timeMsProcessing: number;
-      timeMsServer: number;
-    };
-    data: Array<StoryObject | CommentObject | PollObject | PollOptionObject | HitObject>;
-  }> {
+  ): Promise<HNSearchClientSearchResponse> {
     const searchParams = {
       ...params,
       sortByDate: typeof params.sortByDate === "undefined" ? true : params.sortByDate,
