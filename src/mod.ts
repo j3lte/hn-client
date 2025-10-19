@@ -1,10 +1,13 @@
 import { OrTags, Tags } from "./algolia/helpers.ts";
 import { HNSearchClient, type HNSearchClientOptions, type HNSearchClientSearchResponse } from "./algolia/mod.ts";
+import type { CommentObject, JobObject, PollObject, StoryObject } from "./algolia/objects.ts";
 import type { NumericFilter, SearchParams, Tag } from "./algolia/types.ts";
+import { HNAPI } from "./hn-api/mod.ts";
 
 export * from "./algolia/types.ts";
 export { OrTags, Tags } from "./algolia/helpers.ts";
 export * from "./algolia/objects.ts";
+export { HNSearchClient, type HNSearchClientOptions, type HNSearchClientSearchResponse } from "./algolia/mod.ts";
 
 import { VERSION } from "./util/index.ts";
 
@@ -15,6 +18,7 @@ import { VERSION } from "./util/index.ts";
  * @example
  * ```ts
  * import { HackerNewsClient } from "@j3lte/hn-client";
+import { JobObject } from './algolia/objects';
  *
  * const client = new HackerNewsClient();
  *
@@ -41,7 +45,12 @@ export class HackerNewsClient {
    * Internal search client instance.
    * @private
    */
-  private searchClient: HNSearchClient;
+  private readonly searchClient: HNSearchClient;
+  /**
+   * Internal Hacker News API client instance.
+   * @private
+   */
+  private readonly hnApiClient: HNAPI;
 
   /**
    * Creates a new HackerNewsClient instance.
@@ -66,6 +75,7 @@ export class HackerNewsClient {
    */
   constructor(options: HNSearchClientOptions = {}) {
     this.searchClient = new HNSearchClient(options);
+    this.hnApiClient = new HNAPI();
   }
 
   /**
@@ -101,7 +111,7 @@ export class HackerNewsClient {
    * });
    * ```
    */
-  search(params: SearchParams, init: RequestInit = {}): Promise<HNSearchClientSearchResponse> {
+  search(params: SearchParams = {}, init: RequestInit = {}): Promise<HNSearchClientSearchResponse> {
     return this.searchClient.search(params, init);
   }
 
@@ -126,15 +136,15 @@ export class HackerNewsClient {
    * ```
    */
   frontPage(
-    params: Omit<SearchParams, "tags" | "sortByDate" | "hitsPerPage">,
+    params: Omit<SearchParams, "tags" | "sortByDate" | "hitsPerPage"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
+  ): Promise<HNSearchClientSearchResponse<StoryObject>> {
     // Get unix timestamp for a week ago
     const oneWeekAgo = Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60;
     const numericFilters: NumericFilter[] = [
       `created_at_i>=${oneWeekAgo}`,
     ];
-    return this.searchClient.search({
+    return this.searchClient.search<StoryObject>({
       ...params,
       tags: [Tags.FRONT_PAGE, Tags.STORY],
       numericFilters,
@@ -162,10 +172,10 @@ export class HackerNewsClient {
    * ```
    */
   newest(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<StoryObject | PollObject>> {
+    return this.searchClient.search<StoryObject | PollObject>({
       ...params,
       tags: [OrTags.from([Tags.STORY, Tags.POLL])],
     }, init);
@@ -192,10 +202,10 @@ export class HackerNewsClient {
    * ```
    */
   comments(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<CommentObject>> {
+    return this.searchClient.search<CommentObject>({
       ...params,
       tags: [Tags.COMMENT],
     }, init);
@@ -222,7 +232,7 @@ export class HackerNewsClient {
    * ```
    */
   askHN(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
   ): Promise<HNSearchClientSearchResponse> {
     return this.searchClient.search({
@@ -252,7 +262,7 @@ export class HackerNewsClient {
    * ```
    */
   showHN(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
   ): Promise<HNSearchClientSearchResponse> {
     return this.searchClient.search({
@@ -282,10 +292,10 @@ export class HackerNewsClient {
    * ```
    */
   polls(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<PollObject>> {
+    return this.searchClient.search<PollObject>({
       ...params,
       tags: [Tags.POLL],
     }, init);
@@ -312,10 +322,10 @@ export class HackerNewsClient {
    * ```
    */
   jobs(
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<JobObject>> {
+    return this.searchClient.search<JobObject>({
       ...params,
       tags: [Tags.JOB],
     }, init);
@@ -343,10 +353,10 @@ export class HackerNewsClient {
    */
   userAll(
     userName: string,
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<StoryObject | CommentObject | PollObject>> {
+    return this.searchClient.search<StoryObject | CommentObject | PollObject>({
       ...params,
       tags: [OrTags.from([Tags.STORY, Tags.COMMENT, Tags.POLL]), Tags.author(userName)],
     }, init);
@@ -375,10 +385,10 @@ export class HackerNewsClient {
    */
   userThreads(
     userName: string,
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<CommentObject>> {
+    return this.searchClient.search<CommentObject>({
       ...params,
       tags: [Tags.COMMENT, Tags.author(userName)],
     }, init);
@@ -407,10 +417,10 @@ export class HackerNewsClient {
    */
   userSubmitted(
     userName: string,
-    params: Omit<SearchParams, "tags" | "sortByDate">,
+    params: Omit<SearchParams, "tags" | "sortByDate"> = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
-    return this.searchClient.search({
+  ): Promise<HNSearchClientSearchResponse<StoryObject | PollObject>> {
+    return this.searchClient.search<StoryObject | PollObject>({
       ...params,
       tags: [OrTags.from([Tags.STORY, Tags.POLL]), Tags.author(userName)],
     }, init);
@@ -442,12 +452,40 @@ export class HackerNewsClient {
     storyId: number,
     params: Omit<SearchParams, "tags" | "sortByDate"> & { userName?: string },
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
+  ): Promise<HNSearchClientSearchResponse<CommentObject>> {
     const { userName, ...rest } = params;
     const tags: (Tag | OrTags)[] = [Tags.COMMENT, Tags.story(storyId)];
     if (userName) {
       tags.push(Tags.author(userName));
     }
-    return this.searchClient.search({ ...rest, tags }, init);
+    return this.searchClient.search<CommentObject>({ ...rest, tags }, init);
+  }
+
+  /**
+   * Gets the comments for the latest "Who is hiring?" story.
+   *
+   * @param params - Search parameters (tags, hitsPerPage and filters are automatically set)
+   * @param init - Additional fetch options
+   * @returns Promise resolving to comments for the "Who is hiring?" story
+   */
+  async whoIsHiring(
+    params: Omit<SearchParams, "tags" | "sortByDate" | "filters"> = {},
+    init: RequestInit = {},
+  ): Promise<HNSearchClientSearchResponse<CommentObject>> {
+    const res = await this.searchClient.search<StoryObject>({
+      tags: [Tags.STORY, Tags.author("whoishiring")],
+      hitsPerPage: 1,
+    });
+    if (!res.data || res.data.length === 0) {
+      return res as unknown as HNSearchClientSearchResponse<CommentObject>;
+    }
+    const story = res.data[0] as StoryObject;
+    const comments = await this.searchClient.search<CommentObject>({
+      ...params,
+      tags: [Tags.COMMENT],
+      filters: `parent_id=${story.data.story_id}`,
+      hitsPerPage: 100,
+    }, init);
+    return comments;
   }
 }

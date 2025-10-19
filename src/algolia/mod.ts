@@ -10,17 +10,18 @@ export type HNSearchClientOptions = {
   baseUrl?: string;
 };
 
-export type HNSearchClientSearchResponse = {
-  meta: {
-    hitsPerPage: number;
-    numberOfHits: number;
-    numberOfPages: number;
-    currentPage: number;
-    timeMsProcessing: number;
-    timeMsServer: number;
+export type HNSearchClientSearchResponse<T = StoryObject | CommentObject | PollObject | PollOptionObject | HitObject> =
+  {
+    meta: {
+      hitsPerPage: number;
+      numberOfHits: number;
+      numberOfPages: number;
+      currentPage: number;
+      timeMsProcessing: number;
+      timeMsServer: number;
+    };
+    data: Array<T>;
   };
-  data: Array<StoryObject | CommentObject | PollObject | PollOptionObject | HitObject>;
-};
 
 export class HNSearchClient {
   private readonly baseUrl: string;
@@ -38,10 +39,10 @@ export class HNSearchClient {
    * @param params - Search parameters
    * @returns Promise resolving to AlgoliaResponse
    */
-  async search(
+  async search<T = StoryObject | CommentObject | PollObject | PollOptionObject | HitObject>(
     params: SearchParams = {},
     init: RequestInit = {},
-  ): Promise<HNSearchClientSearchResponse> {
+  ): Promise<HNSearchClientSearchResponse<T>> {
     const searchParams = {
       ...params,
       sortByDate: typeof params.sortByDate === "undefined" ? true : params.sortByDate,
@@ -108,7 +109,7 @@ export class HNSearchClient {
         timeMsProcessing: res.processingTimeMS,
         timeMsServer: res.serverTimeMS,
       },
-      data,
+      data: data as T[],
     };
   }
 }

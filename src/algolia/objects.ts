@@ -23,7 +23,8 @@ const getPermaLink = (objectID: string): string => {
 };
 
 const unescapeHtml = (text: string): string => {
-  return unescape(text, { entityList });
+  // Clean the text from HTML tags and remove <p></p> tags
+  return unescape(text, { entityList }).replace(/<p>|<\/p>/g, "");
 };
 
 /**
@@ -238,6 +239,10 @@ export class CommentObject extends HitObject {
    */
   get isRootComment(): boolean {
     return this.data.parent_id === this.data.story_id;
+  }
+
+  get commentText(): string {
+    return unescapeHtml(this.data.comment_text ?? "");
   }
 
   /**

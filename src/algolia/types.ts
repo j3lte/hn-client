@@ -324,6 +324,12 @@ export type Comment = Hit & {
    * @example "Show HN: My new startup"
    */
   story_title: string;
+
+  /**
+   * The text content of the comment.
+   * @example "This is a comment"
+   */
+  comment_text?: string;
 };
 
 /**
