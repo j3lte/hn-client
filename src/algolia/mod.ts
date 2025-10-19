@@ -1,6 +1,7 @@
 import { buildSearchParams, Tags } from "./helpers.ts";
 import { CommentObject, HitObject, JobObject, PollObject, PollOptionObject, StoryObject } from "./objects.ts";
-import type { AlgoliaResponse, Comment, Job, Poll, PollOption, SearchParams, Story } from "./types.ts";
+import type { Comment, Job, Poll, PollOption, SearchParams, Story } from "./types.ts";
+import type { AlgoliaResponse } from "./types.internal.ts";
 import { VERSION } from "../util/index.ts";
 
 export type HNSearchClientOptions = {

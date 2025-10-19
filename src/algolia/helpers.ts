@@ -14,11 +14,19 @@ import type {
   Tag,
 } from "./types.ts";
 
-// Helper functions to create specific tag types
+/**
+ * Helper function to create an author tag.
+ */
 export const createAuthorTag = (username: string): AuthorIDTag => `author_${username}`;
+
+/**
+ * Helper function to create a story tag.
+ */
 export const createStoryTag = (storyId: string | number): StoryIDTag => `story_${storyId}`;
 
-// Common tag patterns
+/**
+ * Common tag patterns.
+ */
 export const Tags = {
   STORY: "story" as StoryTag,
   COMMENT: "comment" as CommentTag,
@@ -32,6 +40,11 @@ export const Tags = {
   JOB: "job" as JobTag,
 } as const;
 
+/**
+ * This is a helper class to create OR tags.
+ *
+ * Thus result in `(tag1,tag2,tag3)` when `toString` is called.
+ */
 export class OrTags {
   tags: Tag[];
   constructor(tags: Tag[]) {

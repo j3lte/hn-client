@@ -1,38 +1,70 @@
 import type { OrTags } from "./helpers.ts";
 
-export type AlgoliaResponse = {
-  exhastive: { nbHits: boolean; typo: boolean };
-  exhaustiveNbHits: boolean;
-  exhaustiveTypo: boolean;
-  hits: Array<Story | Comment | Poll | PollOption | Hit | Job>;
-  hitsPerPage: number;
-  nbHits: number;
-  nbPages: number;
-  page: number;
-  params: string;
-  processingTimeMS: number;
-  query: string;
-  serverTimeMS: number;
-};
-
-// Tag types for better type safety and pattern support
+/**
+ * Tag used to search for stories.
+ */
 export type StoryTag = `story`;
+/**
+ * Tag used to search for comments.
+ */
 export type CommentTag = `comment`;
+/**
+ * Tag used to search for authors.
+ */
 export type AuthorIDTag = `author_${string}`;
+/**
+ * Tag used to search for stories.
+ */
 export type StoryIDTag = `story_${string}`;
+/**
+ * Tag used to search for polls.
+ */
 export type PollTag = `poll`;
+/**
+ * Tag used to search for poll options.
+ */
 export type PollOptionTag = `pollopt`;
+/**
+ * Tag used to search for Show Hacker News.
+ */
 export type ShowHackerNewsTag = `show_hn`;
+/**
+ * Tag used to search for Ask Hacker News.
+ */
 export type AskHackerNewsTag = `ask_hn`;
+/**
+ * Tag used to search for the front page.
+ */
 export type FrontPageTag = `front_page`;
+/**
+ * Tag used to search for jobs.
+ */
 export type JobTag = `job`;
 
+/**
+ * Numeric operator used to filter numeric fields.
+ */
 export type NumericOperator = "<" | "<=" | "=" | ">" | ">=";
+/**
+ * Numeric filter used to filter created at.
+ */
 export type NumericFilterCreatedAt = `created_at_i${NumericOperator}${number}`;
+/**
+ * Numeric filter used to filter points.
+ */
 export type NumericFilterPoints = `points${NumericOperator}${number}`;
+/**
+ * Numeric filter used to filter number of comments.
+ */
 export type NumericFilterNumComments = `num_comments${NumericOperator}${number}`;
+/**
+ * Numeric filter used to filter number of comments.
+ */
 export type NumericFilter = NumericFilterCreatedAt | NumericFilterPoints | NumericFilterNumComments;
 
+/**
+ * Tag used to search for stories, comments, authors, stories, polls, poll options, show Hacker News, ask Hacker News, front page, and jobs.
+ */
 export type Tag =
   | StoryTag
   | CommentTag
@@ -45,6 +77,9 @@ export type Tag =
   | FrontPageTag
   | JobTag;
 
+/**
+ * Search parameters used to search for stories, comments, authors, stories, polls, poll options, show Hacker News, ask Hacker News, front page, and jobs.
+ */
 export type SearchParams = {
   /**
    * The query to search for.
@@ -86,14 +121,35 @@ export type SearchParams = {
   restrictSearchableAttributes?: string[];
 };
 
+/**
+ * Highlight result used to highlight the search result.
+ */
 export type HighlightResult = { matchLevel: string; matchedWords: string[]; value: string; fullyHighlighted?: boolean };
 
+/**
+ * Tag array with comment.
+ */
 export type TagArrayWithComment = [string, ...string[]] & { includes: (s: CommentTag) => true };
+/**
+ * Tag array with story.
+ */
 export type TagArrayWithStory = [string, ...string[]] & { includes: (s: StoryTag) => true };
+/**
+ * Tag array with poll.
+ */
 export type TagArrayWithPoll = [string, ...string[]] & { includes: (s: PollTag) => true };
+/**
+ * Tag array with poll option.
+ */
 export type TagArrayWithPollOption = [string, ...string[]] & { includes: (s: PollOptionTag) => true };
+/**
+ * Tag array with job.
+ */
 export type TagArrayWithJob = [string, ...string[]] & { includes: (s: JobTag) => true };
 
+/**
+ * This is a base type for all objects returned by the Algolia API.
+ */
 export type Hit = {
   /**
    * The highlighted fields in the search result.
@@ -125,6 +181,9 @@ export type Hit = {
   updated_at: string;
 };
 
+/**
+ * Comment object returned by the Algolia API.
+ */
 export type Comment = Hit & {
   /**
    * The tags included in this comment
@@ -152,6 +211,9 @@ export type Comment = Hit & {
   story_title: string;
 };
 
+/**
+ * Story object returned by the Algolia API.
+ */
 export type Story = Hit & {
   /**
    * The tags included in this story
@@ -187,6 +249,9 @@ export type Story = Hit & {
   url?: string;
 };
 
+/**
+ * Poll object returned by the Algolia API.
+ */
 export type Poll = Hit & {
   /**
    * The tags included in this poll
@@ -214,6 +279,9 @@ export type Poll = Hit & {
   title: string;
 };
 
+/**
+ * Poll option object returned by the Algolia API.
+ */
 export type PollOption = Hit & {
   /**
    * The tags included in this poll option
@@ -225,6 +293,9 @@ export type PollOption = Hit & {
   points: number;
 };
 
+/**
+ * Job object returned by the Algolia API.
+ */
 export type Job =
   & Hit
   & {

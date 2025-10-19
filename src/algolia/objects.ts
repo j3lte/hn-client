@@ -26,6 +26,9 @@ const unescapeHtml = (text: string): string => {
   return unescape(text, { entityList });
 };
 
+/**
+ * This is a base class for all objects returned by the Algolia API.
+ */
 export class HitObject {
   public readonly debug: boolean;
   public readonly highlight: Record<string, HighlightResult>;
@@ -59,6 +62,9 @@ export class HitObject {
   }
 }
 
+/**
+ * Story object returned by the Algolia API.
+ */
 export class StoryObject extends HitObject {
   public override readonly tags: TagArrayWithStory;
   public override readonly data: Omit<Story, "_highlightResult" | "_tags">;
@@ -92,6 +98,9 @@ export class StoryObject extends HitObject {
   }
 }
 
+/**
+ * Comment object returned by the Algolia API.
+ */
 export class CommentObject extends HitObject {
   public override readonly tags: TagArrayWithComment;
   public override readonly data: Omit<Comment, "_highlightResult" | "_tags">;
@@ -117,6 +126,9 @@ export class CommentObject extends HitObject {
   }
 }
 
+/**
+ * Poll object returned by the Algolia API.
+ */
 export class PollObject extends HitObject {
   public override readonly tags: TagArrayWithPoll;
   public override readonly data: Omit<Poll, "_highlightResult" | "_tags">;
@@ -134,6 +146,9 @@ export class PollObject extends HitObject {
   }
 }
 
+/**
+ * Poll option object returned by the Algolia API.
+ */
 export class PollOptionObject extends HitObject {
   public override readonly tags: TagArrayWithPollOption;
   public override readonly data: Omit<PollOption, "_highlightResult" | "_tags">;
@@ -151,6 +166,9 @@ export class PollOptionObject extends HitObject {
   }
 }
 
+/**
+ * Job object returned by the Algolia API.
+ */
 export class JobObject extends HitObject {
   public override readonly tags: TagArrayWithJob;
   public override readonly data: Omit<Job, "_highlightResult" | "_tags">;
